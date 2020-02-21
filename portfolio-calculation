@@ -1,0 +1,42 @@
+import yfinance as yf
+import numpy as np
+import matplotlib.pyplot as plt
+
+invest = 10000
+stocks = ['UPRO', 'TMF']
+ratios = [0.4, 0.6]
+## date format: yyyy-mm-dd
+start_date = '2018-07-05'
+end_date = '2019-07-07'
+## price type is 'High', 'Low', 'Open', 'Close'
+price_type_buy = 'High' 
+price_type_sell = 'High'
+price_type_all = 'High'
+
+stock_tmp = yf.Ticker(stocks[0])
+hist_tmp = stock_tmp.history(start = start_date, end = end_date)
+
+def final_cap(invest, stock_name, ratio, start_date, end_date, price_type_buy, price_type_sell):
+    stock = yf.Ticker(stock_name)
+    hist = stock.history(start = start_date, end = end_date)
+    start_price = hist[price_type_buy][0]
+    end_price = hist[price_type_sell][-1]
+    all_price = hist[price_type_all]
+    shares = invest*ratio/start_price
+    cap_final = end_price*shares
+    cap_day = all_price*shares
+    return cap_final, cap_day
+
+capfs = []
+capds = np.zeros([len(stocks), len(hist_tmp)])
+for stname, rt, i in zip(stocks, ratios, range(len(stocks))):
+    capf, capd = final_cap(invest = invest, stock_name = stname, ratio = rt, start_date = start_date, \
+                    end_date = end_date, price_type_buy = price_type_buy, price_type_sell = price_type_sell)
+    capfs.append(capf)
+    capds[i] = capd
+print('Portfolio:', dict(zip(stocks, ratios)))
+print('Final return: $%d' %(round(sum(capfs), 2)))
+print('Total gain/loss: $%d' %(round(sum(capfs)-invest, 2)))
+plt.plot(hist_tmp.index, np.sum(capds, axis = 0))
+plt.axhline(y=invest, color='gray', linestyle='--')
+plt.show()
