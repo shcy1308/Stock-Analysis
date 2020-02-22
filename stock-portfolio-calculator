@@ -63,8 +63,10 @@ for stname, rt, i in zip(stocks, ratios, range(len(stocks))):
     
 #### print the results ####
 ratiosp = [str(rt*100)+'%' for rt in ratios]
+Capfs = ['$'+str(round(cf, 2)) for cf in capfs]
 print('Ratio at the beginning:', dict(zip(stocks, ratiosp)))
 print('Shares:', dict(zip(stocks, shares)))
+print('Return from each stock:', dict(zip(stocks, Capfs)))
 print('Final return: $%d' %(round(sum(capfs), 2)))
 print('Total gain/loss: $%d' %(round(sum(capfs)-invest, 2)))
 print('Current range of date: %s to %s' %(start_date, end_date))
@@ -77,11 +79,6 @@ fig = go.Figure(data=go.Scatter(x=hist_tmp1.index, y=np.sum(capds, axis = 0), na
 for i in range(len(stocks)):
     fig.add_trace(go.Scatter(x=hist_tmp1.index, y=capds[i], name = stocks[i]))
 fig.add_shape(type = 'line', x0=start_date, y0=invest, x1=end_date,y1=invest, line=dict(
-                color="LightSeaGreen",
-                width=2,
-                dash="dashdot",
-            ))
-fig.update_layout(title='Total Daily Return',
-                   xaxis_title='Date',
-                   yaxis_title='Daily Return ($)')
+                color="LightSeaGreen", width=2, dash="dashdot"))
+fig.update_layout(title='Total Daily Return', xaxis_title='Date', yaxis_title='Daily Return ($)')
 fig.show()
