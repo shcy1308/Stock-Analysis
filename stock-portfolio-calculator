@@ -13,7 +13,7 @@ ratios = [0.4, 0.6]
 start_date = '2017-07-05'
 end_date = '2019-02-21'
 ## price type: 'High', 'Low', 'Open', 'Close'
-price_type_buy = 'High' 
+price_type_buy = 'Close' 
 price_type_sell = 'High'
 price_type_all = 'High'
 
@@ -72,6 +72,10 @@ for stname, rt, i in zip(stocks, ratios, range(len(stocks))):
 ratiosp = [rt*100 for rt in ratios]
 print('Investment Period: %s to %s' %(start_date, end_date))
 print('Maximum Period: %s to %s' %(std, edd))
+
+price_type = [[price_type_buy, price_type_sell, price_type_all]]
+pricetp = pd.DataFrame(data = price_type, index = ['Price_Type'], columns = ['Buy', 'Sell', 'Daily'])
+print(pricetp)
 
 finvest = init_invs+[sum(init_invs)]
 fratios = ratiosp+[sum(ratios)*100]
