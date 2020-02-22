@@ -1,0 +1,87 @@
+import yfinance as yf
+import numpy as np
+import matplotlib.pyplot as plt
+from termcolor import colored
+import plotly.graph_objects as go
+
+#### inital parameters ####
+invest = 10000
+stocks = ['UPRO', 'TMF']
+ratios = [0.4, 0.6]
+## date format: yyyy-mm-dd
+start_date = '2010-07-05'
+end_date = '2020-02-21'
+## price type: 'High', 'Low', 'Open', 'Close'
+price_type_buy = 'High' 
+price_type_sell = 'High'
+price_type_all = 'High'
+
+###################################################################################
+#### calculate the max date range #####
+stdates = []
+eddates = []
+for stname in stocks:
+    stock_tmp = yf.Ticker(stname)
+    hist_tmp = stock_tmp.history(period = 'max')
+    stdates.append(hist_tmp.index[0])
+    eddates.append(hist_tmp.index[-1])
+std = str(max(stdates))[0:10]
+edd = str(min(eddates))[0:10]
+
+#### check the input ####
+if len(stocks) != len(ratios):
+    raise Exception('Number of stocks must be equal to the number of ratios')
+if start_date < std or start_date > edd or end_date < std or end_date > edd:
+    raise Exception('The start/end date you input is out of the maximum range of the date (%s to %s).' %(std, edd))
+
+#### to count the number of days
+stock_tmp = yf.Ticker(stocks[0])
+hist_tmp1 = stock_tmp.history(start = start_date, end = end_date)
+
+#### a function to calculate final return and daily return for one stock ####
+def final_cap(invest, stock_name, ratio, start_date, end_date, price_type_buy, price_type_sell):
+    stock = yf.Ticker(stock_name)
+    hist = stock.history(start = start_date, end = end_date)
+    start_price = hist[price_type_buy][0]
+    end_price = hist[price_type_sell][-1]
+    all_price = hist[price_type_all]
+    share = invest*ratio/start_price
+    cap_final = end_price*share
+    cap_day = all_price*share
+    return cap_final, cap_day, share
+
+#### calculate final return and daily return for all stocks ####
+capfs = []
+shares = []
+capds = np.zeros([len(stocks), len(hist_tmp1)])
+for stname, rt, i in zip(stocks, ratios, range(len(stocks))):
+    capf, capd, shr = final_cap(invest = invest, stock_name = stname, ratio = rt, start_date = start_date, \
+                    end_date = end_date, price_type_buy = price_type_buy, price_type_sell = price_type_sell)
+    capfs.append(capf)
+    shares.append(round(shr, 2))
+    capds[i] = capd
+    
+#### print the results ####
+ratiosp = [str(rt*100)+'%' for rt in ratios]
+print('Ratio at the beginning:', dict(zip(stocks, ratiosp)))
+print('Shares:', dict(zip(stocks, shares)))
+print('Final return: $%d' %(round(sum(capfs), 2)))
+print('Total gain/loss: $%d' %(round(sum(capfs)-invest, 2)))
+print('Current range of date: %s to %s' %(start_date, end_date))
+print('Maximum range of date: %s to %s' %(std, edd))
+if sum(ratios) != 1:
+    print(colored('WARNING: the sum of your ratios is not 100%', 'red'))
+
+#### plot daily return ####
+fig = go.Figure(data=go.Scatter(x=hist_tmp1.index, y=np.sum(capds, axis = 0), name = 'Daily Total '))
+for i in range(len(stocks)):
+    fig.add_trace(go.Scatter(x=hist_tmp1.index, y=capds[i], name = stocks[i]))
+fig.add_shape(type = 'line', x0=start_date, y0=invest, x1=end_date,y1=invest, line=dict(
+                color="LightSeaGreen",
+                width=2,
+                dash="dashdot",
+            ))
+fig.update_layout(title='Total Daily Return',
+                   xaxis_title='Date',
+                   yaxis_title='Daily Return ($)')
+fig.show()
