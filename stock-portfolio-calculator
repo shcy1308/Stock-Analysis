@@ -2,15 +2,14 @@ import yfinance as yf
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from termcolor import colored
 import plotly.graph_objects as go
 
 #### inital parameters ####
 invest = 10000
-stocks = ['UPRO', 'TMF']
-ratios = [0.4, 0.6]
+stocks = ['UPRO', 'TMF', 'BMY']
+ratios = [0.4, 0.3, 0.3]
 ## date format: yyyy-mm-dd
-start_date = '2017-07-05'
+start_date = '2018-10-05'
 end_date = '2019-02-21'
 ## price type: 'High', 'Low', 'Open', 'Close'
 price_type_buy = 'Close' 
@@ -34,7 +33,9 @@ if len(stocks) != len(ratios):
     raise Exception('Number of stocks must be equal to the number of ratios')
 if start_date < std or start_date > edd or end_date < std or end_date > edd:
     raise Exception('The start/end date you input is out of the maximum range of the date (%s to %s).' %(std, edd))
-
+if sum(ratios) != 1:
+    raise Exception('The sum of your ratios is not 100%')
+    
 #### to count the number of days
 stock_tmp = yf.Ticker(stocks[0])
 hist_tmp1 = stock_tmp.history(start = start_date, end = end_date)
@@ -77,18 +78,18 @@ price_type = [[price_type_buy, price_type_sell, price_type_all]]
 pricetp = pd.DataFrame(data = price_type, index = ['Price_Type'], columns = ['Buy', 'Sell', 'Daily'])
 print(pricetp)
 
-finvest = init_invs+[sum(init_invs)]
-fratios = ratiosp+[sum(ratios)*100]
+iinvest = init_invs+[sum(init_invs)]
+iratios = ratiosp+[sum(ratios)*100]
 fshares = shares+[sum(shares)]
 fegls = egls+[sum(egls)]
 fcapfs = capfs+[sum(capfs)]
-smry_tmp = np.array([finvest, fratios, fshares, np.round(fegls, 2), np.round(fcapfs, 2)]).T
+fratios = np.round(fcapfs/sum(capfs), 3)*100
+smry_tmp = np.array([iratios, fratios, fshares, iinvest, np.round(fegls, 2), np.round(fcapfs, 2)]).T
 smry = pd.DataFrame(data = smry_tmp, index = stocks+['Total'], 
-                    columns = ['Initial_Cap($)', 'Proportion(%)', 'Shares', 'Gain/Loss($)', 'Return($)'])
+                    columns = ['Init_Prop(%)', 'Final_Prop(%)', 'Init_Shares', 'Init_Cap($)', 'Gain/Loss($)', 'Return($)'])
 print(smry)
 
-if sum(ratios) != 1:
-    print(colored('WARNING: the sum of your ratios is not 100%', 'red'))
+
 
 #### plot daily return ####
 fig = go.Figure(data=go.Scatter(x=hist_tmp1.index, y=np.sum(capds, axis = 0), name = 'Daily Total '))
