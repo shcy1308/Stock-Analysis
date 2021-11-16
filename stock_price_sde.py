@@ -1,6 +1,6 @@
 import yfinance as yf
 import numpy as np
-import matplotlib.pyplot as pl
+import matplotlib.pyplot as plt
 from datetime import date
 import sdeint 
 
