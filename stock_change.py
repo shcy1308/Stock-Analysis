@@ -2,8 +2,7 @@ import yfinance as yf
 import pandas as pd
 from datetime import date
 import numpy as np
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
+
 #from pytickersymbols import PyTickerSymbols
 
 #stock_data = PyTickerSymbols()
