@@ -1,8 +1,7 @@
 import yfinance as yf
-import yahoo_fin.stock_info as si
+#import yahoo_fin.stock_info as si
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
 
 stock = yf.Ticker("ba".upper())
 unit = 'quart'
@@ -61,4 +60,7 @@ else:
     print(gross_smry)
     print(round(pb_ratio, 3))
     print(round(asset_smry, 3))
+    print(stock.info['trailingEps'])
+    print(stock.info['pegRatio'])
+    
     
