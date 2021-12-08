@@ -16,7 +16,7 @@ nq100 = pd.read_csv('C:/CShi/nasdaq100.csv')
 sp500 = pd.read_csv('C:/CShi/sp500.csv')
 
 ######### start and end time
-stdate = '2021-11-01'
+stdate = '2017-01-01'
 eddate = date.today()
 
 ######### price increase

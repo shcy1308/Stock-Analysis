@@ -4,13 +4,19 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 
-stock = yf.Ticker("CMG")
-fin = stock.quarterly_financials
+stock = yf.Ticker("ba".upper())
+unit = 'quart'
+
+if unit == 'quart':
+  fin = stock.quarterly_financials
+  bs = stock.quarterly_balance_sheet
+elif unit == 'year':
+  fin = stock.financials
+  bs = stock.balance_sheet
+
 if(fin.shape[0] == 0):
     print('Invalid Ticker')
 else:
-    bs = stock.quarterly_balance_sheet
-    
     ## gross
     rev_total = fin.loc['Total Revenue', :]
     rev_cost = fin.loc['Cost Of Revenue', :]
@@ -28,7 +34,7 @@ else:
     gross_smry.columns = ['Gross', 'G_PCHG', 'G_Margin', 'GM_PCHG']
     
     ## PB ratio 
-    pb_ratio = stock.info['marketCap']/(bs.loc['Total Assets', :][0]-bs.loc['Total Liab', :][0])
+    pb_ratio = stock.info['marketCap']/bs.loc['Net Tangible Assets', :][0]
 
     ## Ratio of totoal liab and total asset
     lia_ast = bs.loc['Total Liab', :]/bs.loc['Total Assets', :]
@@ -50,8 +56,7 @@ else:
     
     dfasset = [lia_ast_cur, lia_ast, cash_lia_cur, cash_lia, cain_lia_cur, cain_lia]
     asset_smry = pd.DataFrame(dfasset).T
-    asset_smry.columns = ['Cur_L/A', 'Tot_L/A', 'Cur_C/L', 'Tot_C/L', 'Cur_CI/L', \
-                    'Tot_CI/L']
+    asset_smry.columns = ['Cur_L/A', 'Tot_L/A', 'Cur_C/L', 'Tot_C/L', 'Cur_CI/L', 'Tot_CI/L']
     
     print(gross_smry)
     print(round(pb_ratio, 3))
