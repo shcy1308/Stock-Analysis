@@ -6,7 +6,7 @@ import datetime as dt
 from matplotlib import pyplot as plt
 
 ## eps
-ticker = 'aapl'
+ticker = 'ko'
 stock = yf.Ticker(ticker)
 earning_tmp1 = si.get_earnings_history(ticker)
 earning_tmp2 = pd.DataFrame(earning_tmp1)
@@ -34,7 +34,11 @@ eps_ttms = [np.sum(eps_act[i:(i+4)]) for i in range(0, len(eps_act)-3)]
 # pe ratios
 pers = np.array(price_aves[0:-3])/np.array(eps_ttms)
 pers
+
+plt.plot(earntime, price_aves)
 plt.plot(pers)
+plt.xticks(rotation = 90)
+
 plt.show()
 
 summary = pd.DataFrame([earntime, price_aves, pers]).T
