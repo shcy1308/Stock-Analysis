@@ -3,10 +3,10 @@ import pandas as pd
 import numpy as np
 
 ########## read nasdaq 100 tickers
-nq100 = pd.read_csv('C:/CShi/nasdaq100.csv')
+nq100 = pd.read_csv('C:/CShi/Stock-Analysis/nasdaq100.csv')
 
 ########## read sp500 tickers
-sp500 = pd.read_csv('C:/CShi/sp500.csv')
+sp500 = pd.read_csv('C:/CShi/Stock-Analysis/sp500.csv')
 
 variables = ['revenueGrowth', 'targetLowPrice', 'targetMedianPrice', 'targetHighPrice', 'forwardPE', 'priceToBook', 'pegRatio', 'beta', 'recommendationKey']
 

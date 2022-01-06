@@ -6,7 +6,7 @@ import datetime as dt
 from matplotlib import pyplot as plt
 
 ## eps
-ticker = 'ko'
+ticker = 'amd'
 stock = yf.Ticker(ticker)
 earning_tmp1 = si.get_earnings_history(ticker)
 earning_tmp2 = pd.DataFrame(earning_tmp1)
@@ -38,7 +38,7 @@ pers
 plt.plot(earntime, price_aves)
 plt.plot(pers)
 plt.xticks(rotation = 90)
-
+plt.legend(['Price', 'PER'])
 plt.show()
 
 summary = pd.DataFrame([earntime, price_aves, pers]).T

@@ -10,7 +10,7 @@ nq100 = pd.read_csv('C:/CShi/Stock-Analysis/nasdaq100.csv')
 sp500 = pd.read_csv('C:/CShi/Stock-Analysis/sp500.csv')
 
 ######### start and end time
-stdate = '2017-01-01'
+stdate = '2015-01-01'
 eddate = '2019-12-31'
 
 ######### price increase
@@ -52,3 +52,7 @@ indeces = pd.DataFrame(['voo', 'qqq'])
 indeces.columns = ['Symbol']
 inc_pcnt(tickers = indeces, stdate = stdate, eddate = eddate)
 
+########################## single stock #############################
+indeces = pd.DataFrame(['sony'])
+indeces.columns = ['Symbol']
+inc_pcnt(tickers = indeces, stdate = stdate, eddate = eddate)
